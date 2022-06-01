@@ -1,0 +1,47 @@
+//FITCC 2022
+
+#include <Servo.h>    
+#include <SPI.h>      
+#include "RF24.h"     
+
+
+Servo MyServo1;
+Servo MyServo3;
+Servo MyServo4;
+Servo MyServo2;
+Servo MyServo5;
+
+RF24 radio(4,7);    
+
+const uint64_t pipe = 0xE8E8F0F0E1LL; 
+int data[5];
+
+void setup(){
+
+  MyServo1.attach(3); 
+  MyServo2.attach(9); 
+  MyServo3.attach(10); 
+  MyServo4.attach(5); 
+  MyServo5.attach(6); 
+  
+  radio.begin();                   
+  radio.openReadingPipe(1, pipe);  
+  radio.startListening();          
+  }
+
+void loop(){
+  if(radio.available()){
+    bool done = false;
+    while (!done){
+    done = radio.read(data, sizeof(data)); 
+
+    MyServo1.write(data[2]); 
+    MyServo2.write(data[4]); 
+    MyServo3.write(data[3]); 
+    MyServo4.write(data[1]); 
+    MyServo5.write(data[0]); 
+
+
+    }
+  }
+}

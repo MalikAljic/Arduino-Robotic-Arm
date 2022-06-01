@@ -1,0 +1,55 @@
+//FITCC 2022
+
+#include <SPI.h>                     
+#include "RF24.h"                     
+
+int data[5];
+
+int flex5 = A5;
+int flex4 = A4;
+int flex3 = A3;
+int flex2 = A2;
+int flex1 = A1;
+
+
+int flex_5_val;
+int flex_4_val;
+int flex_3_val;
+int flex_2_val;
+int flex_1_val;
+
+RF24 radio(9,10);                    
+                                      
+const uint64_t pipe = 0xE8E8F0F0E1LL; 
+
+void setup(void){
+  Serial.begin(9600);
+  radio.begin();   
+  radio.openWritingPipe(pipe);      
+}
+
+void loop(void){
+
+  flex_5_val = analogRead(flex5); 
+  flex_5_val = map(flex_5_val, 900, 800, 0, 180);
+  
+  flex_4_val = analogRead(flex4);
+  flex_4_val = map(flex_4_val, 900, 800, 0, 180);
+ 
+  flex_3_val = analogRead(flex3);
+  flex_3_val = map(flex_3_val, 900, 800, 0, 180);
+ 
+  flex_2_val = analogRead(flex2);
+  flex_2_val = map(flex_2_val, 900, 800, 0, 180);
+  
+  flex_1_val = analogRead(flex1);
+  flex_1_val = map(flex_1_val, 900, 800, 0, 180);
+  
+  data[0] = flex_5_val;
+  data[1] = flex_4_val;
+  data[2] = flex_3_val;
+  data[3] = flex_2_val;
+  data[4] = flex_1_val;
+
+  radio.write(data, sizeof(data));
+}
